@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--  namespace="实现的接口"-->
+<mapper namespace="org.seckill.dao.UserDao">
+	<!--  目的：为Dao接口方法提供sql语句配置-->
+	
+	<insert id="insertUser" parameterType="org.seckill.entity.Suser">
+		insert into SUSER(USER_ID,USER_NAME,
+				USER_PASSWORD,	USER_EMAIL,
+				USER_PHONE,USER_TOKEN,
+				USER_DESC)
+		values (#{userId},#{userName},
+				#{userPassword},#{userEmail},
+				#{userPhone},#{userToken},
+				#{userDesc})
+	</insert>
+	
+	<!-- update id= "方法名",update返回int型，影响的行数-->
+	<update id= "updateUser" parameterType="org.seckill.entity.Suser">
+		<!-- 具体sql语句-->
+		update SUSER
+		<set>
+			<if test="userPassword != null and !&quot;&quot;.equals(userPassword.trim())">
+	    	USER_PASSWORD = #{userPassword},</if>
+			<if test="userEmail != null and !&quot;&quot;.equals(userEmail.trim())">
+	    	USER_EMAIL = #{userEmail},</if>
+			<if test="userPhone != null and !&quot;&quot;.equals(userPhone.trim())">
+	    	USER_PHONE = #{userPhone},</if>
+			<if test="userToken != null and !&quot;&quot;.equals(userToken.trim())">
+	    	USER_TOKEN = #{userToken},	</if>
+			<if test="userDesc != null and !&quot;&quot;.equals(userDesc.trim())">
+	    	USER_DESC = #{userDesc},</if>			
+		</set>
+			<where>
+				and USER_NAME = #{userName}
+			</where>
+	</update>
+	
+	<select id="queryByName" resultType="Suser" >
+		select <include refid="columns"/>	from SUSER
+		<where>
+		and USER_NAME = #{name}
+		</where>
+	</select>
+	
+	<select id="queryBydesc" resultType="Suser" >
+		select <include refid="columns"/>	from SUSER
+		<where>
+			and USER_DESC like '%' #{desc} '%'
+		</where>
+	</select>
+	
+	<!-- order by create_time desc:根据创建时间反向排序-->
+	<select id="queryAllUser" resultType="Suser" >
+		select <include refid="columns"/>	from SUSER
+		order by CREATE_TIME desc
+		limit #{offset},#{limit}  
+	</select>
+	
+	<sql id="columns">USER_ID,USER_NAME,USER_PASSWORD,USER_EMAIL,USER_PHONE,USER_TOKEN,CREATE_TIME,USER_DESC</sql>
+	
+</mapper>
+
+
+

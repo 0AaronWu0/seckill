@@ -1,0 +1,6 @@
+org\seckill\dao\cache\RedisDaoTest.class
+org\seckill\dao\SuccessKilledDaoTest.class
+org\seckill\service\LoginServiceTest.class
+org\seckill\dao\SeckillDaoTest.class
+org\seckill\dao\UserDaoTest.class
+org\seckill\service\SeckillServiceTest.class
