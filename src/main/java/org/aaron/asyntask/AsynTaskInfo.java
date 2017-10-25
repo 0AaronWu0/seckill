@@ -27,7 +27,6 @@ public class AsynTaskInfo {
 	private int serverQueueLimit;//队列阈值
 	private String serverName;//服务线程名
 	
-	
 	public String getTaskType() {
 		return taskType;
 	}
