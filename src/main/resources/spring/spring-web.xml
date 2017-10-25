@@ -15,7 +15,7 @@
 
 	<!--配置SpringMVC -->
 	
-	<!-- 1:开启S配额ringMVC注解模式 -->
+	<!-- 1:开启SpringMVC注解模式 -->
 	<!-- 简化配置: 
 	(1) 自动注册 DefaultAnnotationHandlerMapping,AnnotationMethodHandlerAdapter; 
 	(2) 提供一系列功能:数据绑定,数字和日期的format @NumberFormat,@DataTimeFormat
@@ -34,10 +34,8 @@
 		</mvc:interceptor>	
 	</mvc:interceptors>
 	<!-- 3:配置jsp 显示ViewResolver -->
-	<bean
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass"
-			value="org.springframework.web.servlet.view.JstlView" />
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>

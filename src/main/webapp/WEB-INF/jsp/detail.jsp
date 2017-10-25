@@ -11,7 +11,7 @@
 	<div class="container">
 		<div class="panel panel-default text-center">
 			<div class="panel-heading">
-				<h1>${seckill.name}</h1>
+				<h1>${seckill.sname}</h1>
 			</div>
 			<div class="panel-body">
 				<h2 class="text-danger">

@@ -6,9 +6,9 @@ public class Seckill {
 
 	private long seckillId;
 	
-	private String name;
+	private String sname;
 	
-	private int number;
+	private int snumber;
 	
 	private Date startTime;
 	
@@ -24,20 +24,21 @@ public class Seckill {
 		this.seckillId = seckillId;
 	}
 
-	public String getName() {
-		return name;
+
+	public String getSname() {
+		return sname;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSname(String sname) {
+		this.sname = sname;
 	}
 
-	public int getNumber() {
-		return number;
+	public int getSnumber() {
+		return snumber;
 	}
 
-	public void setNumber(int number) {
-		this.number = number;
+	public void setSnumber(int snumber) {
+		this.snumber = snumber;
 	}
 
 	public Date getStartTime() {
@@ -67,7 +68,7 @@ public class Seckill {
 
 	@Override
 	public String toString() {
-		return "Seckill [seckillId=" + seckillId + ", name=" + name + ", number=" + number + ", startTime=" + startTime
+		return "Seckill [seckillId=" + seckillId + ", name=" + sname + ", number=" + snumber + ", startTime=" + startTime
 				+ ", endTime=" + endTime + ", createTime=" + createTime + "]";
 	}
 	

@@ -30,8 +30,8 @@
  								<tbody>
  									<c:forEach var="sk" items="${list}">
 	 									<tr>
-	 										<td>${sk.name}</td>
-	 										<td>${sk.number}</td>
+	 										<td>${sk.sname}</td>
+	 										<td>${sk.snumber}</td>
 	 										<td>
 	 											<fmt:formatDate value="${sk.startTime}" pattern="yyyy-MM-dd HH:mm:ss"/>
 	 										</td>

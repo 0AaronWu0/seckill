@@ -52,20 +52,21 @@ public class SeckillServiceImpl implements SeckillService {
 	public Exposer exportSeckillUrl(long seckillId) {
 		//优化点:缓存优化:超时的基础上维护一致性(数据不变的情况,多并发)
 		//1:访问redis
-		Seckill seckill = redisDao.getSeckill(seckillId);
-		if (seckill == null) {		
-			//2:访问数据库
-			seckill = seckillDao.queryById(seckillId);
-			if(seckill != null){
-				//3:放入redis
-				String result = redisDao.putSeckill(seckill);
-				System.out.println("result"+result);
-				seckill = redisDao.getSeckill(seckillId);
-				System.out.println("seckill="+seckill);
-			}else{
-				return new Exposer(false, seckillId);
-			}
-		}
+		Seckill seckill = seckillDao.queryById(seckillId);
+//		Seckill seckill = redisDao.getSeckill(seckillId);
+//		if (seckill == null) {		
+//			//2:访问数据库
+//			seckill = seckillDao.queryById(seckillId);
+//			if(seckill != null){
+//				//3:放入redis
+//				String result = redisDao.putSeckill(seckill);
+//				System.out.println("result"+result);
+//				seckill = redisDao.getSeckill(seckillId);
+//				System.out.println("seckill="+seckill);
+//			}else{
+//				return new Exposer(false, seckillId);
+//			}
+//		}
 		Date startTime = seckill.getStartTime();
 		Date endTime = seckill.getEndTime();
 		Date nowTime = new Date();
