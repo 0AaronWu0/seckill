@@ -6,9 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.util.StopWatch.TaskInfo;
+
 /**
  * 异步任务表(TSK_ASYN_TASK)
- * 
+ * 新建异步任务需继承此类，并试实现executeEvent()方法
  * @author 
  * @version 1.0.0 2017-10-27
  */
@@ -82,17 +84,54 @@ public abstract class AsynTaskBean {
     /** 备注3 */
     private String info3;
     
+    //表中没有改字段，用于重做时数据库中生成planTimeSeconds
     public BigDecimal planTimeSeconds;
     
-    //TODO
+    /**
+     * 异步任务处理自己的事
+     * @return
+     * @throws Exception
+     */
     public abstract AsynTaskErrInfo executeEvent() throws Exception;
     
-    public boolean addRedoTask(AsynTaskErrInfo errInfo, String mapper){
-    	
-		return false;
+    /**
+     * 可以自定义重做方法
+     * @param errInfo
+     * @param asynTaskInfo
+     * @return
+     */
+    public boolean addRedoTask(AsynTaskErrInfo errInfo, AsynTaskInfo taskInfo){
+    	boolean redoFlag = isNeedRedo(errInfo,taskInfo.getRedoNum());
+    	if(redoFlag){
+    		//如果有重做间隔，就设置下次执行时间（如果为空，就马上执行）
+    		int redoTimeSplit = taskInfo.getRedoTimeSplit();
+    		this.planTime = null ;
+    		if(redoTimeSplit > 0){
+    			this.planTimeSeconds = new BigDecimal(redoTimeSplit);
+    		}else{
+    			this.planTimeSeconds = null ;
+    		}
+    		this.taskId = taskInfo.getTaskId(null);
+    		this.dealNum = dealNum.add(new BigDecimal(1));
+    		this.state = AsynTaskEnum.TaskStateType.PEDDING.getCode();
+    		this.ip = null ;
+    		this.inQueueTime = null ;
+    		taskInfo.getSqlSession().insert(taskInfo.getMapper() + ".insertSelective", this);
+    	}
+		return redoFlag;
     }
     
-    public BigDecimal getPlanTimeSeconds() {
+    private boolean isNeedRedo(AsynTaskErrInfo errInfo, int redoNum) {
+		if(!errInfo.isSuccFlag() && errInfo.isRedoFlag()){
+			if(this.dealNum.intValue() < redoNum){
+				return true;
+			}
+			return false;
+		}
+		return false;
+	}
+
+	public BigDecimal getPlanTimeSeconds() {
 		return planTimeSeconds;
 	}
 
@@ -459,4 +498,17 @@ public abstract class AsynTaskBean {
     public void setInfo3(String info3) {
         this.info3 = info3;
     }
+
+	@Override
+	public String toString() {
+		return "AsynTaskBean [taskId=" + taskId + ", keywords=" + keywords + ", taskType=" + taskType + ", state="
+				+ state + ", priority=" + priority + ", applyTime=" + applyTime + ", inQueueTime=" + inQueueTime
+				+ ", ip=" + ip + ", threadId=" + threadId + ", startWorkTime=" + startWorkTime + ", endWorkTime="
+				+ endWorkTime + ", errCode=" + errCode + ", errMsg=" + errMsg + ", dealNum=" + dealNum
+				+ ", timeoutLimit=" + timeoutLimit + ", planTime=" + planTime + ", refCol1=" + refCol1 + ", refCol2="
+				+ refCol2 + ", refCol3=" + refCol3 + ", info1=" + info1 + ", info2=" + info2 + ", info3=" + info3
+				+ ", planTimeSeconds=" + planTimeSeconds + "]";
+	}
+    
+    
 }

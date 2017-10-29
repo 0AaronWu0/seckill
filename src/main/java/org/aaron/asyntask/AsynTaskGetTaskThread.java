@@ -12,6 +12,7 @@ import org.aaron.monitor.ThreadStatus;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * 异步任务获取线程
@@ -21,9 +22,9 @@ import org.slf4j.LoggerFactory;
 public class AsynTaskGetTaskThread extends AbstractAsynTask implements Runnable {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Resource
+	@Autowired
 	public SqlSessionTemplate sqlSession;
-	private volatile boolean running ;//运行标志
+	private volatile boolean running = true;//运行标志
 	private Thread getTaskThread = null;//当前线程对象
 	private AsynTaskThreadPool asynTaskThreadPool;//线程池对象
 	private AsynTaskInfo asynTaskInfo;//线程池配置信息对象
@@ -68,8 +69,6 @@ public class AsynTaskGetTaskThread extends AbstractAsynTask implements Runnable 
 		map.put("ip", AsynTaskConstant.getIp());
 		map.put("taskNum", asynTaskInfo.getTaskNnum());
 		map.put("taskType", asynTaskInfo.getTaskType());
-		//TODO
-//		asynTaskInfo.setParamMap(map);
 		int updTaskCount = 0;
 		//获取对应异步任务表的Mapper.xml 
 		String asynTaskMapper = asynTaskInfo.getMapper();
@@ -160,6 +159,5 @@ public class AsynTaskGetTaskThread extends AbstractAsynTask implements Runnable 
 		this.asynTaskInfo = asynTaskInfo;
 	}
 
-	
 
 }

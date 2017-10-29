@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author as
@@ -22,26 +23,23 @@ import org.slf4j.LoggerFactory;
 public class AsynTaskThreadPool {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Resource
+	@Autowired
 	public SqlSessionTemplate sqlSession;
-	//一个类维护队列
+	//一个类维护队列,PriorityBlockingQueue 优先级队列,里面存储的对象必须是实现Comparable接口
+	//规则是：当前和其他对象比较，如果compare方法返回负数，那么在队列里面的优先级就比较搞
 	private PriorityBlockingQueue<Runnable> asynTaskQueue = new PriorityBlockingQueue<Runnable>();
-	private boolean running = true ;
-	private ThreadPoolExecutor asynTaskServer;//真实的线程池
+	private volatile boolean running = true ;
+	private ThreadPoolExecutor asynTaskThreadPool;//真实的线程池
 	private AsynTaskInfo asynTaskInfo;//线程池配置信息对象
-	
+	//存储队列中的worker集合，用于超时任务移除队列中的Worker
 	private AsynTaskMap asynTaskMap = new AsynTaskMap();
-	
+	//存储线程池中的线程的集合，用于超时任务杀死线程
 	private Map<String,Thread> threadMap =new HashMap<String, Thread>();
 	
 	public void addThreadMap(String threadId, Thread th){
 		synchronized(threadMap){
 			threadMap.put(threadId, th);
 		}
-	}
-	
-	public void clearThreadMap(){
-		asynTaskMap.clear();
 	}
 	
 	public Thread getThread(String threadName){
@@ -56,9 +54,9 @@ public class AsynTaskThreadPool {
 		logger.info("线程池启动开始", asynTaskInfo);
 		try{
 			this.running = true ; 
-			clearThreadMap();
+			threadMap.clear();
 			asynTaskMap.clear();
-			asynTaskServer = new ThreadPoolExecutor(asynTaskInfo.getServerCorePoolSize(),
+			asynTaskThreadPool = new ThreadPoolExecutor(asynTaskInfo.getServerCorePoolSize(),
 					asynTaskInfo.getServerMaxPoolSize(), asynTaskInfo.getServerKeepAliveTime(), 
 					TimeUnit.SECONDS, asynTaskQueue);
 			logger.info("线程池启动成功", asynTaskInfo);
@@ -67,6 +65,7 @@ public class AsynTaskThreadPool {
 		}
 	}
 	
+	
 	/**
 	 * 销毁方法
 	 */
@@ -74,24 +73,22 @@ public class AsynTaskThreadPool {
 		logger.info("线程池销毁开始", asynTaskInfo);
 		this.running = false ;
 		String mapper = asynTaskInfo.getMapper();
-		if(asynTaskServer != null){
+		if(asynTaskThreadPool != null){
 			try {
-				asynTaskServer.shutdownNow();
+				asynTaskThreadPool.shutdownNow();
 			} catch (Exception e) {
 				logger.error("线程池销毁异常",e);
 			}
 		}
 		//清空线程集合中键值对
-		clearThreadMap();
+		threadMap.clear();
 		//如果队列不位空，则把队列里的任务都重置
 		synchronized(asynTaskMap){
 			if(asynTaskQueue.size() > 0){
 				HashMap<String,Object> map =new HashMap<String, Object>();
-				//TODO
-//				map.put("ip", AsynTaskConstant.getIp());
+				map.put("ip", AsynTaskConstant.getIp());
 				map.put("taskType", asynTaskInfo.getTaskType());
 				try {
-					//TODO
 					sqlSession.update(mapper+"updateMyIpTaskStateToPedding", map);
 				} catch (Exception e) {
 					logger.info("线程池启动开始", asynTaskInfo);
@@ -119,7 +116,7 @@ public class AsynTaskThreadPool {
 		synchronized (asynTaskMap) {
 			asynTaskMap.addWorker(dat);
 		}
-		asynTaskServer.execute(dat);
+		asynTaskThreadPool.execute(dat);
 	}
 	
 	public boolean removeQueueAndMap(String taskId){
@@ -157,4 +154,14 @@ public class AsynTaskThreadPool {
 	public void setRunning(boolean running){
 		this.running = running;
 	}
+
+	public SqlSessionTemplate getSqlSession() {
+		return sqlSession;
+	}
+
+	public void setSqlSession(SqlSessionTemplate sqlSession) {
+		this.sqlSession = sqlSession;
+	}
+	
+	
 }

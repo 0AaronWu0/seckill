@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 异步任务表(TSK_ASYN_TASK) -->
+<mapper namespace="AsynTaskMapper">
+    <!-- 结果映射 -->
+    <resultMap id="tskAsynTaskMap" type="org.aaron.asyntask.AsynTaskBean">
+        <result column="TASK_ID" property="taskId" jdbcType="VARCHAR" />
+        <result column="KEYWORDS" property="keywords" jdbcType="VARCHAR" />
+        <result column="TASK_TYPE" property="taskType" jdbcType="VARCHAR" />
+        <result column="STATE" property="state" jdbcType="VARCHAR" />
+        <result column="PRIORITY" property="priority" jdbcType="DECIMAL" typeHandler="org.aaron.asyntask.TaskPriorityTypeHandler"/>
+        <result column="APPLY_TIME" property="applyTime" jdbcType="DATE" />
+        <result column="IN_QUEUE_TIME" property="inQueueTime" jdbcType="DATE" />
+        <result column="IP" property="ip" jdbcType="VARCHAR" />
+        <result column="THREAD_ID" property="threadId" jdbcType="VARCHAR" />
+        <result column="START_WORK_TIME" property="startWorkTime" jdbcType="DATE" />
+        <result column="END_WORK_TIME" property="endWorkTime" jdbcType="DATE" />
+        <result column="ERR_CODE" property="errCode" jdbcType="VARCHAR" />
+        <result column="ERR_MSG" property="errMsg" jdbcType="VARCHAR" />
+        <result column="DEAL_NUM" property="dealNum" jdbcType="DECIMAL" />
+        <result column="TIMEOUT_LIMIT" property="timeoutLimit" jdbcType="DECIMAL" />
+        <result column="PLAN_TIME" property="planTime" jdbcType="DATE" />
+        <result column="REF_COL1" property="refCol1" jdbcType="VARCHAR" />
+        <result column="REF_COL2" property="refCol2" jdbcType="VARCHAR" />
+        <result column="REF_COL3" property="refCol3" jdbcType="VARCHAR" />
+        <result column="INFO1" property="info1" jdbcType="VARCHAR" />
+        <result column="INFO2" property="info2" jdbcType="VARCHAR" />
+        <result column="INFO3" property="info3" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!-- 表所有字段 -->
+    <sql id="allColumns">
+        tat.TASK_ID, tat.KEYWORDS, tat.TASK_TYPE, tat.STATE,
+        tat.PRIORITY, tat.APPLY_TIME, tat.IN_QUEUE_TIME, tat.IP,
+        tat.THREAD_ID, tat.START_WORK_TIME, tat.END_WORK_TIME, tat.ERR_CODE,
+        tat.ERR_MSG, tat.DEAL_NUM, tat.TIMEOUT_LIMIT, tat.PLAN_TIME,
+        tat.REF_COL1, tat.REF_COL2, tat.REF_COL3, tat.INFO1,
+        tat.INFO2, tat.INFO3
+    </sql>
+
+    <!-- IP抢任务 -->
+    <select id="updateStateBeforeGetTask" parameterType="map">
+        UPDATE TSK_ASYN_TASK
+          SET ip = #{ip,jdbcType=VARCHAR}
+        WHERE state = '0'
+        and ip is null
+        and task_type = #{taskType,jdbcType=VARCHAR}
+        and (plan_time is null or sysdate &gt; plan_time)
+        and ROWNUM &lt;= #{getTaskNum,jdbcType=DECIMAL}
+    </select>
+
+ 
+</mapper>

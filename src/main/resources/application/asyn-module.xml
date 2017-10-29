@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd ">
+    <!--#### 因异步框架添加 20171016 start####-->
+    
+    <!-- 线程监控 -->
+    
+    <!-- 线程信息 -->
+    <bean id="rcvMsgTaskInfo" class = "org.aaron.asyntask.AsynTaskInfo">
+        <property name="taskType" value="RMSG"/>
+        <property name="mapper" value="AsynTaskMapper"/>
+        <property name="updateTaskMapperName" value="AsynTaskMapper.updateStateBeforeGetTask"/>
+        <property name="taskListMapperName" value="AsynTaskMapper.getTaskList" />
+        <property name="taskThreadName" value="rcvMsgAsynTaskThread" />
+        <property name="taskSleepTime" value="5000"/><!--秒毫 -->
+        <property name="taskNnum" value="20"/>
+        <property name="timeoutTaskThreadName" value="rcvMsgTimeoutAsynTaskThread"/>
+        <property name="timeoutTaskSleepTime" value="60000"/>
+        <property name="timeoutLimit" value="6000"/>
+        <property name="serverCorePoolSize" value="5"/>
+        <property name="serverKeepAliveTime" value="500"/>
+        <property name="serverQueueLimit" value="10"/>
+        <property name="serverName" value="rcvMsgAsynTaskThreadPool" />
+        <property name="redoNum" value="3"/>
+        <property name="redoTimeSplit" value="60"/> <!--秒-->
+    </bean>
+
+    <bean id="rcvMsgAsynThreadPool" class="org.aaron.asyntask.AsynTaskThreadPool"
+          init-method="initialize" destroy-method="terminate">
+        <property name="asynTaskInfo" ref="rcvMsgTaskInfo"/>
+    </bean>
+    <bean id="rcvMsgGetAsynTaskThread" class="org.aaron.asyntask.AsynTaskGetTaskThread"
+          init-method="initialize" destroy-method="terminate">
+        <property name="asynTaskInfo" ref="rcvMsgTaskInfo" />
+        <property name="asynTaskThreadPool" ref="rcvMsgAsynThreadPool"/>
+    </bean>
+
+    <bean id="rcvMsgTimeoutGetAsynTaskThread" class="org.aaron.asyntask.AsynTaskGetTimeoutTaskThread"
+          init-method="initialize" destroy-method="terminate">
+        <property name="asynTaskInfo" ref="rcvMsgTaskInfo" />
+        <property name="asynTaskThreadPool" ref="rcvMsgAsynThreadPool"/>
+    </bean>
+
+    <!--#### 因异步框架添加 20171016 end####-->
+
+</beans>
