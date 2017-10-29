@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.aaron.asyntask.AsynTaskEnum.TaskPriotityType;
+
 /**
  * 异步任务队列集合
  * @author as
@@ -11,38 +13,49 @@ import java.util.Map;
  */
 public class AsynTaskMap {
 	
-	private	Map<String,ArrayList<AsynTaskWorker>> taskQuqeueMap ;//按权限分类
+	private	Map<TaskPriotityType,ArrayList<AsynTaskWorker>> taskQuqeueMap ;//按权限分类
 	private	Map<String,AsynTaskWorker> taskIdWorkerMap ;//按taskID分类
 	
 	public AsynTaskMap(){
-		taskQuqeueMap = new HashMap<String, ArrayList<AsynTaskWorker>>();
+		taskQuqeueMap = new HashMap<TaskPriotityType, ArrayList<AsynTaskWorker>>();
 		taskIdWorkerMap = new HashMap<String, AsynTaskWorker>();
-		//TODO
+		for(TaskPriotityType taskPriotityType :TaskPriotityType.values()){
+			taskQuqeueMap.put(taskPriotityType ,new ArrayList<AsynTaskWorker>());
+		}
 	}
 	
 	public void clear(){
 		taskIdWorkerMap.clear();
+		for(TaskPriotityType taskPriotityType :TaskPriotityType.values()){
+			taskQuqeueMap.get(taskPriotityType).clear();
+		}
 	}
 	
 	public void addWorker(AsynTaskWorker worker){
-		//TODO
+		taskQuqeueMap.get(TaskPriotityType.getEnum(worker.getAsynTaskBean().getPriority())).add(worker);
+		taskIdWorkerMap.put(worker.getAsynTaskBean().getTaskId(),worker);
 	}
 	
 	public void removeWorker(String taskId){
 		removeWorker(getWorker(taskId));
-		//TODO
 	}
 	
 	public void removeWorker(AsynTaskWorker worker){
-		//TODO
+		taskQuqeueMap.get(TaskPriotityType.getEnum(worker.getAsynTaskBean().getPriority())).remove(worker);
+		taskIdWorkerMap.remove(worker.getAsynTaskBean().getTaskId());
 	}
 	
 	public AsynTaskWorker getWorker(String taskId){
 		return taskIdWorkerMap.get(taskId);
 	}
 	
-	public Thread getLowestWorker(){
-		//TODO
+	public AsynTaskWorker getLowestWorker(){
+		for(TaskPriotityType taskPriotityType:TaskPriotityType.orderList){
+			if(taskQuqeueMap.get(taskPriotityType).size() != 0){
+				ArrayList<AsynTaskWorker> workerList = taskQuqeueMap.get(taskPriotityType);
+				return workerList.get(workerList.size()-1);
+			}
+		}
 		return null;
 	}
 	

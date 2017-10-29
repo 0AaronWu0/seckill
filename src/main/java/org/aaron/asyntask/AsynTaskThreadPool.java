@@ -57,6 +57,7 @@ public class AsynTaskThreadPool {
 		try{
 			this.running = true ; 
 			clearThreadMap();
+			asynTaskMap.clear();
 			asynTaskServer = new ThreadPoolExecutor(asynTaskInfo.getServerCorePoolSize(),
 					asynTaskInfo.getServerMaxPoolSize(), asynTaskInfo.getServerKeepAliveTime(), 
 					TimeUnit.SECONDS, asynTaskQueue);
@@ -66,6 +67,9 @@ public class AsynTaskThreadPool {
 		}
 	}
 	
+	/**
+	 * 销毁方法
+	 */
 	public void terminate(){
 		logger.info("线程池销毁开始", asynTaskInfo);
 		this.running = false ;
@@ -83,11 +87,12 @@ public class AsynTaskThreadPool {
 		synchronized(asynTaskMap){
 			if(asynTaskQueue.size() > 0){
 				HashMap<String,Object> map =new HashMap<String, Object>();
+				//TODO
 //				map.put("ip", AsynTaskConstant.getIp());
 				map.put("taskType", asynTaskInfo.getTaskType());
 				try {
 					//TODO
-					sqlSession.update(mapper, map);
+					sqlSession.update(mapper+"updateMyIpTaskStateToPedding", map);
 				} catch (Exception e) {
 					logger.info("线程池启动开始", asynTaskInfo);
 				}

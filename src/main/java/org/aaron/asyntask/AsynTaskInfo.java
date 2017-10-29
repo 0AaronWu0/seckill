@@ -11,6 +11,8 @@ public class AsynTaskInfo {
 	
 	private String taskType;//任务类型
 	private String mapper;//异步任务对应的Mapper文件
+	private String updateTaskMapperName;
+	private String taskListMapperName;
 	private String taskThreadName;//任务线程名
 	private int taskSleepTime;//取任务间隔时间
 	private int taskNnum;//每次取任务数量
@@ -27,6 +29,19 @@ public class AsynTaskInfo {
 	private int serverQueueLimit;//队列阈值
 	private String serverName;//服务线程名
 	
+	
+	public String getUpdateTaskMapperName() {
+		return updateTaskMapperName;
+	}
+	public void setUpdateTaskMapperName(String updateTaskMapperName) {
+		this.updateTaskMapperName = updateTaskMapperName;
+	}
+	public String getTaskListMapperName() {
+		return taskListMapperName;
+	}
+	public void setTaskListMapperName(String taskListMapperName) {
+		this.taskListMapperName = taskListMapperName;
+	}
 	public String getTaskType() {
 		return taskType;
 	}
@@ -112,8 +127,6 @@ public class AsynTaskInfo {
 	public void setServerName(String serverName) {
 		this.serverName = serverName;
 	}
-	
-	
 	
 	
 	
