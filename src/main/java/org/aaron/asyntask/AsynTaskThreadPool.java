@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AsynTaskThreadPool {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Resource
 	public SqlSessionTemplate sqlSession;
 	//一个类维护队列,PriorityBlockingQueue 优先级队列,里面存储的对象必须是实现Comparable接口
 	//规则是：当前和其他对象比较，如果compare方法返回负数，那么在队列里面的优先级就比较搞
@@ -155,13 +155,4 @@ public class AsynTaskThreadPool {
 		this.running = running;
 	}
 
-	public SqlSessionTemplate getSqlSession() {
-		return sqlSession;
-	}
-
-	public void setSqlSession(SqlSessionTemplate sqlSession) {
-		this.sqlSession = sqlSession;
-	}
-	
-	
 }

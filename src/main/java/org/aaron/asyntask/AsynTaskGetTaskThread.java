@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class AsynTaskGetTaskThread extends AbstractAsynTask implements Runnable {
 
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	@Autowired
+	@Resource
 	public SqlSessionTemplate sqlSession;
 	private volatile boolean running = true;//运行标志
 	private Thread getTaskThread = null;//当前线程对象

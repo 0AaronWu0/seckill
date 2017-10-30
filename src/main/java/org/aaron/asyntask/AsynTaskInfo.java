@@ -41,7 +41,7 @@ public class AsynTaskInfo {
 	private String receiveThreadName;//接收消息线程（）
 	private String queueid;//队列ID
 	
-	@Autowired
+	@Resource
 	private SqlSessionTemplate sqlSession;
 	//获取异步任务主键（可自定义）
 	public String getTaskId(Map<String,Object> map){
