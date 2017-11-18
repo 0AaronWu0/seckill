@@ -8,10 +8,10 @@ http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	<!--#### 因异步框架添加 20171016 Start####-->
      <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:application/asyn-module.xml,
-			classpath:application/dubbo-*.xml,
-			classpath:application/spring-dao.xml,
-			classpath:application/spring-service.xml
+        <param-value>WEB-INF/application/asyn-module.xml,
+			WEB-INF/dubbo/dubbo-*.xml,
+			WEB-INF/application/spring-dao.xml,
+			WEB-INF/application/spring-service.xml
 		</param-value>
      </context-param>
     <listener>
@@ -34,7 +34,7 @@ http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 		 -->
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath:application/spring-web.xml</param-value>
+			<param-value>WEB-INF/application/spring-web.xml</param-value>
 		</init-param>
 	</servlet>
 

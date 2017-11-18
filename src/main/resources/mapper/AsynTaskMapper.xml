@@ -33,13 +33,86 @@
 
     <!-- 表所有字段 -->
     <sql id="allColumns">
-        tat.TASK_ID, tat.KEYWORDS, tat.TASK_TYPE, tat.STATE,
-        tat.PRIORITY, tat.APPLY_TIME, tat.IN_QUEUE_TIME, tat.IP,
-        tat.THREAD_ID, tat.START_WORK_TIME, tat.END_WORK_TIME, tat.ERR_CODE,
-        tat.ERR_MSG, tat.DEAL_NUM, tat.TIMEOUT_LIMIT, tat.PLAN_TIME,
-        tat.REF_COL1, tat.REF_COL2, tat.REF_COL3, tat.INFO1,
-        tat.INFO2, tat.INFO3
+        TASK_ID,
+        KEYWORDS,
+        TASK_TYPE,
+        STATE,
+        PRIORITY,
+        APPLY_TIME,
+        IN_QUEUE_TIME,
+        IP,
+        THREAD_ID,
+        START_WORK_TIME,
+        END_WORK_TIME,
+        ERR_CODE,
+        ERR_MSG,
+        DEAL_NUM,
+        TIMEOUT_LIMIT,
+        PLAN_TIME,
+        REF_COL1,
+        REF_COL2,
+        REF_COL3,
+        INFO1,
+        INFO2,
+        INFO3
     </sql>
+
+    <!-- 插入数据 -->
+    <insert id="addAsynTask" parameterType="org.aaron.asyntask.AsynTaskBean">
+        INSERT INTO TSK_ASYN_TASK (
+        TASK_ID,
+        KEYWORDS,
+        TASK_TYPE,
+        STATE,
+        PRIORITY,
+        APPLY_TIME,
+        <if test="inQueueTime != null and inQueueTime != ''">
+          IN_QUEUE_TIME,
+        </if>
+        <if test="ip != null and ip != ''">
+            IP,
+        </if>
+        <if test="ip != null and ip != ''">
+            IP,
+        </if>
+        <if test="planTime != null and planTime != ''">
+            PLAN_TIME,
+        </if>
+        DEAL_NUM,
+        TIMEOUT_LIMIT,
+        REF_COL1,
+        REF_COL2,
+        REF_COL3,
+        INFO1,
+        INFO2,
+        INFO3
+        )
+        VALUES (
+        #{taskId,jdbcType=VARCHAR},
+        #{keywords,jdbcType=VARCHAR},
+        #{taskType,jdbcType=VARCHAR},
+        #{state,jdbcType=VARCHAR},
+        #{priority,jdbcType=DECIMAL},
+        systimestamp,
+        <if test="inQueueTime != null and inQueueTime != ''">
+            #{inQueueTime,jdbcType=DATE},
+        </if>
+        <if test="ip != null and ip != ''">
+            #{ip,jdbcType=VARCHAR},
+        </if>
+        <if test="planTime != null and planTime != ''">
+            #{planTime,jdbcType=DATE},
+        </if>
+        #{dealNum,jdbcType=INTEGER},
+        #{timeoutLimit,jdbcType=INTEGER},
+        #{refCol1,jdbcType=VARCHAR},
+        #{refCol2,jdbcType=VARCHAR},
+        #{refCol3,jdbcType=VARCHAR},
+        #{info1,jdbcType=VARCHAR},
+        #{info2,jdbcType=VARCHAR},
+        #{info3,jdbcType=VARCHAR}
+        )
+    </insert>
 
     <!-- IP抢任务 -->
     <select id="updateStateBeforeGetTask" parameterType="map">
@@ -52,5 +125,15 @@
         and ROWNUM &lt;= #{getTaskNum,jdbcType=DECIMAL}
     </select>
 
- 
+    <!-- IP抢任务 -->
+    <select id="updateTaskStateToPedding" parameterType="org.aaron.asyntask.AsynTaskBean">
+        UPDATE TSK_ASYN_TASK t
+        SET ip = '',
+            t.state = '0',
+            t.in_queue_time =''
+        WHERE t.state = '1'
+        and t.task_id = #{taskId,jdbcType=VARCHAR}
+    </select>
+
+    
 </mapper>

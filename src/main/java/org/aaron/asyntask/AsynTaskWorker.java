@@ -17,14 +17,14 @@ public class AsynTaskWorker implements Runnable, Comparable<AsynTaskWorker> {
 	private AsynTaskInfo asynTaskInfo;
 	private AsynTaskThreadPool asynTaskThreadPool;//线程池对象
 	
-	public AsynTaskWorker(AsynTaskBean asynTaskBean,AsynTaskInfo asynTaskInfo,AsynTaskThreadPool asynTaskServer,
+	public AsynTaskWorker(AsynTaskBean asynTaskBean,AsynTaskInfo asynTaskInfo,AsynTaskThreadPool threadPool,
 			Date date){
 		this.sqlSession = asynTaskInfo.getSqlSession();
 		this.priority = asynTaskBean.getPriority().intValue();
 		this.inQueueTime = date.getTime();
 		this.asynTaskBean = asynTaskBean;
 		this.asynTaskInfo = asynTaskInfo;
-		this.asynTaskThreadPool = asynTaskServer;
+		this.asynTaskThreadPool = threadPool;
 	}
 	
 	public void run() {

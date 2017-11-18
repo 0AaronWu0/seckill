@@ -80,7 +80,7 @@ public class AsynTaskGetTimeoutTaskThread extends AbstractAsynTask implements Ru
 				//每次批量处理异步任务的开始时间，存入线程状态，用于线程监控
 				stauts.setLastReportTime(new Date());
 				
-				//抢任务
+				//抢任务，先对大于２倍超时时间的任务进行抢夺，抢完状态变６超时被杀ｉｐ变为本机
 				try{
 					updTaskCount = sqlSession.update(asynTaskMapper + "updateStateAndIpWhenDoubleTimeOut", map);
 				}catch (Exception e) {
@@ -98,6 +98,7 @@ public class AsynTaskGetTimeoutTaskThread extends AbstractAsynTask implements Ru
 					try{
 						//将异步任务放入队列中
 						for (AsynTaskBean asynTaskBean : taskList) {
+							//状态为工作中的任务，需要进行杀线程动作
 							if(TaskStateType.START_WORK == TaskStateType.getEnum(asynTaskBean.getState())
 									&& AsynTaskConstant.getIp().equals(asynTaskBean.getIp())){
 								Thread worker = asynTaskThreadPool.getThread(asynTaskBean.getThreadId());
@@ -110,22 +111,24 @@ public class AsynTaskGetTimeoutTaskThread extends AbstractAsynTask implements Ru
 									}
 								}
 							}
+							//状态为进入队列的任务，需要移除队列
 							if(TaskStateType.IN_QUEUE == TaskStateType.getEnum(asynTaskBean.getState())
 									&& AsynTaskConstant.getIp().equals(asynTaskBean.getIp())){
+								//如果从队列里面移除任务失败，直接continue，不作任何处理（说明正好这时有任务在执行）
 								if(!asynTaskThreadPool.removeQueueAndMap(asynTaskBean.getTaskId())){
 									continue;
 								}
 							}
-							asynTaskBean.setErrCode(errCode);
-							asynTaskBean.setErrMsg(errMsg);
-							
+							asynTaskBean.setErrCode("CD001022");
+							asynTaskBean.setErrMsg("异常任务超时");
+							//杀掉后，把人物状态改为超时被杀
 							try{
 								sqlSession.update(asynTaskMapper+".updateStateToKill", asynTaskBean);
 							}catch (Exception e) {
 								logger.error(asynTaskInfo.getTaskThreadName() +"更新任务状态超时被杀异常: ",e);
 								continue;
 							}
-							
+							//如需要重做，内部自己判断
 							try{
 								asynTaskBean.addRedoTask(errInfo, asynTaskInfo);
 							}catch (Exception e) {

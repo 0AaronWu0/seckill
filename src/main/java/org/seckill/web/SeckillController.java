@@ -40,7 +40,7 @@ public class SeckillController {
 			model.addAttribute("list", list);
 			//list.jsp+model=ModelAndView
 			return "list";///WEB-INF/jsp/list.jsp
-		} 
+		}
 
 		@RequestMapping(value = "/{seckillId}/detail",method = RequestMethod.GET)
 		public String detail(@PathVariable("seckillId")Long seckillId,Model model){
