@@ -9,6 +9,8 @@ import javax.annotation.Resource;
 
 import org.aaron.monitor.ThreadMonitor;
 import org.aaron.monitor.ThreadStatus;
+import org.common.util.SpringUtil;
+import org.dubbo.service.ReceiveService;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +89,9 @@ public class AsynTaskGetTaskThread extends AbstractAsynTask implements Runnable 
 					}catch (Exception e) {
 						logger.error(asynTaskInfo.getTaskThreadName() + "抢任务异常: ",e);
 					}
+					ReceiveService receiveService = (ReceiveService)SpringUtil.getBean("reqMsgService");
+					Map serviceMap = receiveService.execute(new HashMap<String, Object>());
+					System.out.println("#####" + serviceMap);
 					//抢到任务
 					if(updTaskCount> 0){
 						List<AsynTaskBean> taskList = null;

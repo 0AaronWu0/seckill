@@ -15,9 +15,8 @@ public class MsgReceiveServiceImpl implements ReceiveService{
     AsynTaskThreadPool asynTaskThreadPool;
 
     public Map<String, Object> execute(Map<String, Object> map) {
-        HashMap outMap = null ;
-        map.get("xx");
-
+        HashMap outMap = new HashMap() ;
+        System.out.println("@@@@@IIIIIIIIIi");
         MsgRcvAsynBean msgRcvAsynBean = new MsgRcvAsynBean();
         msgRcvAsynBean.setKeywords("123123");
         msgRcvAsynBean.setPriority(AsynTaskEnum.TaskPriotityType.FIRST.getValue());

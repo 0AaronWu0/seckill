@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,10 +247,14 @@ public class AsynTaskThreadPool {
 		}
 		taskBean.setTaskType(asynTaskInfo.getTaskType());
 		taskBean.setState(AsynTaskEnum.TaskStateType.IN_QUEUE.getCode());
-		taskBean.setInQueueTime(new Date());
+//		taskBean.setInQueueTime(new Date());
 		taskBean.setIp(AsynTaskConstant.getIp());
-
-		int ret = sqlSession.insert(asynTaskInfo.getMapper() + ".addAsynTask", taskBean);
+		int ret = 0;
+		try {
+			ret = sqlSession.insert(asynTaskInfo.getMapper() + ".addAsynTask", taskBean);
+		} catch (Exception e) {
+			System.out.println(e.getCause().toString());
+		}
 
 		AsynTaskWorker dat = new AsynTaskWorker(taskBean, asynTaskInfo, this, new Date());
 		if (!transactionFlag) {

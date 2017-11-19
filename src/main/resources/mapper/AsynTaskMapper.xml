@@ -72,9 +72,6 @@
         <if test="ip != null and ip != ''">
             IP,
         </if>
-        <if test="ip != null and ip != ''">
-            IP,
-        </if>
         <if test="planTime != null and planTime != ''">
             PLAN_TIME,
         </if>
@@ -88,7 +85,7 @@
         INFO3
         )
         VALUES (
-        #{taskId,jdbcType=VARCHAR},
+        'AD'||to_char(lpad(seq_task_id.nextval,9,0)),
         #{keywords,jdbcType=VARCHAR},
         #{taskType,jdbcType=VARCHAR},
         #{state,jdbcType=VARCHAR},
