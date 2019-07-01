@@ -51,7 +51,8 @@
  					</div>					
  				</div> 		
  		</div>
-   
+		<%--<a href="${pageContext.request.contextPath}download/cors.rar">压缩包</a>--%>
+		<a href="/download/cors.rar">压缩包</a>
    </body>
    		<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 		<script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
