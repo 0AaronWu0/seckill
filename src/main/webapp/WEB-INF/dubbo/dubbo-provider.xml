@@ -19,7 +19,7 @@
     <!--<dubbo:monitor protocol="registry"/>-->
 
      <!--声明需要暴露的服务接口-->
-    <bean id="MsgRcvReceiveService" class="org.dubboMsgRcvHandler.MsgReceiveServiceImpl"/>
+    <bean id="MsgRcvReceiveService" class="org.dubbo.MsgRcvHandler.MsgReceiveServiceImpl"/>
     <dubbo:service interface="org.dubbo.service.ReceiveService" ref="MsgRcvReceiveService"
                    timeout="30000" version="1.0" scope="remote" loadbalance="roundrobin" retries="0"/>
 

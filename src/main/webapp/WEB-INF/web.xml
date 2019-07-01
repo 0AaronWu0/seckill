@@ -10,8 +10,8 @@ http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
         <param-name>contextConfigLocation</param-name>
         <param-value>WEB-INF/application/asyn-module.xml,
 			WEB-INF/application/spring-dao.xml,
-			WEB-INF/application/spring-service.xml,
-			WEB-INF/dubbo/dubbo-*.xml
+			WEB-INF/application/spring-service.xml
+			<!--WEB-INF/dubbo/dubbo-*.xml-->
 		</param-value>
      </context-param>
     <listener>
