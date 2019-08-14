@@ -18,8 +18,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 //告诉Junit spring配置文件
 @ContextConfiguration(locations={
-		"classpath:spring/spring-dao.xml",
-		"classpath:spring/spring-service.xml"})
+        "classpath:WEB-INF/application/spring-dao.xml",
+        "classpath:WEB-INF/application/spring-service.xml"})
 public class SeckillServiceTest {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());	

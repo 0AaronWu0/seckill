@@ -13,7 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 //告诉Junit spring配置文件
-@ContextConfiguration(locations={"classpath:spring/spring-dao.xml"})
+@ContextConfiguration(locations={"classpath:WEB-INF/application/spring-dao.xml"})
 public class UserDaoTest {
 
 	//注入Dao实现类依赖
